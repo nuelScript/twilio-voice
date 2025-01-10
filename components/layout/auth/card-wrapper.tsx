@@ -69,7 +69,7 @@ export const CardWrapper = ({
         >
           {hrefLabel}{" "}
           <Link href={href}>
-            <span className="text-red-500">{hrefCTA}</span>
+            <span className="text-blue-500">{hrefCTA}</span>
           </Link>
         </p>
       )}

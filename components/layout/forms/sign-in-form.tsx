@@ -120,7 +120,7 @@ export const SignInForm = () => {
           disabled={isPending}
           type="submit"
           className={cn(
-            "w-full h-12 rounded-md bg-[#DC0A00] shadow-sm transition-all duration-300",
+            "w-full h-12 rounded-md bg-blue-600 shadow-sm transition-all duration-300",
             "text-white font-medium flex items-center justify-center gap-2"
           )}
         >

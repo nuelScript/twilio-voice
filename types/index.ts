@@ -26,3 +26,12 @@ export interface SignUpFormValues {
   password: string;
   confirmPassword: string;
 }
+
+export interface Transcript {
+  id: string;
+  callSid: string;
+  text: string;
+  sentiment: number;
+  magnitude: number;
+  createdAt: string;
+}

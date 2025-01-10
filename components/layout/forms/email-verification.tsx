@@ -5,7 +5,7 @@ import { resendVerificationEmail } from "@/actions/resend-verification";
 import { CardWrapper } from "@/components/layout/auth/card-wrapper";
 import { FormError } from "@/components/layout/auth/form-error";
 import { FormSuccess } from "@/components/layout/auth/form-success";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 
@@ -13,6 +13,7 @@ export const EmailVerificationForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
 
@@ -77,6 +78,17 @@ export const EmailVerificationForm = () => {
         <FormSuccess message={success} />
         <FormError message={error} />
       </div>
+
+      {success && (
+        <div className="w-full flex justify-center">
+          <button
+            onClick={() => router.push("/login")}
+            className="mt-4 bg-[#DC0A00] shadow-sm transition-all duration-300 text-white px-4 py-2 rounded"
+          >
+            Continue to Login
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="w-full flex justify-center">
