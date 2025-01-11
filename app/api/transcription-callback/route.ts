@@ -1,38 +1,41 @@
-import { db } from "@/lib/db";
-import { analyzeSentiment } from "@/lib/sentiment";
 import { NextRequest, NextResponse } from "next/server";
+import { analyzeSentiment } from "@/lib/sentiment";
+import { db } from "@/lib/db";
 
-export async function POST(req: NextRequest) {
-  const { TranscriptionText, CallSid } = await req.json();
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();
+  const transcriptionText = formData.get("TranscriptionText");
+  const callSid = formData.get("CallSid");
 
-  if (TranscriptionText && CallSid) {
+  if (transcriptionText && callSid) {
     try {
-      const sentiment = await analyzeSentiment(TranscriptionText);
+      const sentiment = await analyzeSentiment(transcriptionText.toString());
 
       await db.transcript.create({
         data: {
-          callSid: CallSid,
-          text: TranscriptionText,
+          callSid: callSid.toString(),
+          text: transcriptionText.toString(),
           sentiment: sentiment.score,
           magnitude: sentiment.magnitude,
         },
       });
 
-      return NextResponse.json(
-        { message: "Transcription saved successfully" },
-        { status: 200 }
-      );
+      return NextResponse.json({ message: "Transcription saved successfully" });
     } catch (error) {
       console.error("Error saving transcription:", error);
       return NextResponse.json(
-        { error: "Internal Server Error" },
+        { message: "Error saving transcription" },
         { status: 500 }
       );
     }
   } else {
     return NextResponse.json(
-      { error: "Transcription text or CallSid missing" },
+      { message: "Invalid transcription data" },
       { status: 400 }
     );
   }
+}
+
+export async function GET() {
+  return new NextResponse("Method not allowed", { status: 405 });
 }

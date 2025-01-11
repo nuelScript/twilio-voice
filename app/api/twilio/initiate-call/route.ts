@@ -1,49 +1,42 @@
-import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
-import client from "@/lib/twilio";
+import twilio from "@/lib/twilio";
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
+  const { phoneNumber, direction } = await request.json();
+
+  if (!phoneNumber) {
+    return NextResponse.json(
+      { message: "Phone number is required" },
+      { status: 400 }
+    );
+  }
+
   try {
-    const session = await auth();
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { phoneNumber, direction } = await req.json();
-
-    if (!phoneNumber) {
-      return NextResponse.json(
-        { error: "Phone number is required" },
-        { status: 400 }
-      );
-    }
-
     let call;
-
     if (direction === "inbound") {
-      call = await client.calls.create({
+      call = await twilio.calls.create({
         url: `${process.env.NEXTAUTH_URL}/api/twilio`,
         to: process.env.TWILIO_PHONE_NUMBER!,
         from: phoneNumber,
       });
     } else {
-      call = await client.calls.create({
+      call = await twilio.calls.create({
         url: `${process.env.NEXTAUTH_URL}/api/twilio`,
         to: phoneNumber,
         from: process.env.TWILIO_PHONE_NUMBER!,
       });
     }
 
-    return NextResponse.json(
-      { message: "Call Initiated", callSid: call.sid },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Call initiated", callSid: call.sid });
   } catch (error) {
-    console.error(error);
+    console.error("Error initiating call:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { message: "Error initiating call" },
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return new NextResponse("Method not allowed", { status: 405 });
 }
