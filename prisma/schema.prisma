@@ -62,6 +62,6 @@ model Transcript {
   sentiment Float
   magnitude Float
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
 }

@@ -1,18 +1,17 @@
-import { LanguageServiceClient } from "@google-cloud/language";
+import natural from "natural";
 
-const client = new LanguageServiceClient();
+const analyzer = new natural.SentimentAnalyzer(
+  "English",
+  natural.PorterStemmer,
+  "afinn"
+);
 
 export async function analyzeSentiment(text: string) {
-  const document = {
-    content: text,
-    type: "PLAIN_TEXT" as const,
-  };
-
-  const [result] = await client.analyzeSentiment({ document });
-  const sentiment = result.documentSentiment;
+  const tokens = new natural.WordTokenizer().tokenize(text);
+  const sentiment = analyzer.getSentiment(tokens);
 
   return {
-    score: sentiment?.score ?? 0,
-    magnitude: sentiment?.magnitude ?? 0,
+    score: sentiment,
+    magnitude: Math.abs(sentiment),
   };
 }

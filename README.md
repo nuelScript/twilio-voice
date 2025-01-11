@@ -24,3 +24,27 @@ This project implements an AI-driven voice communication integration using the T
 ```bash
 git clone [https://github.com/your-username/voice-communication-integration.git](https://github.com/your-username/voice-communication-integration.git)
 ```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+
+3. Set up environment variables:
+Create a `.env.local` file in the root directory and add the following variables:
+
+```bash
+DATABASE_URL=your_postgresql_connection_string
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+GOOGLE_APPLICATION_CREDENTIALS=path_to_your_google_cloud_credentials_json
+NEXTAUTH_SECRET=your_nextauth_secret
+```
