@@ -106,7 +106,10 @@ export default function Dashboard() {
         </h1>
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Initiate Call</h2>
-          <form onSubmit={initiateCall} className="flex items-center space-x-4">
+          <form
+            onSubmit={initiateCall}
+            className="flex flex-col md:flex-row md:items-center space-x-0 space-y-4 md:space-y-0 md:space-x-4"
+          >
             <input
               type="tel"
               value={phoneNumber}

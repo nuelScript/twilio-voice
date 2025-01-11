@@ -4,7 +4,15 @@
  * @type {string[]}
  */
 
-export const publicRoutes = ["/", "/verify-email", "verify-password"];
+export const publicRoutes = [
+  "/",
+  "/verify-email",
+  "verify-password",
+  "/api/transcripts",
+  "/api/twilio/voice",
+  "/api/twilio/transcription-callback",
+  "/api/twilio/initiate-call",
+];
 
 /**
  * An array of routes that are used for authentication

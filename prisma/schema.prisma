@@ -57,7 +57,7 @@ model PasswordResetToken {
 
 model Transcript {
   id        String   @id @default(cuid())
-  callSid   String
+  callSid   String?
   text      String
   sentiment Float
   magnitude Float
