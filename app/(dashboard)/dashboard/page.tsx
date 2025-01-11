@@ -41,11 +41,11 @@ export default function Dashboard() {
     isPending: transcriptPending,
     error: transcriptError,
   } = useQuery<Transcript[]>({
-    queryKey: ["transcripts", session?.user?.email],
+    queryKey: ["transcripts", session?.user?.id],
     queryFn: async () => {
       const response = await axios.get("/api/transcripts");
 
-      return response.data.transcripts;
+      return response.data;
     },
     enabled: !!session,
     retry: 1,
