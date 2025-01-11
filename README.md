@@ -15,7 +15,6 @@ This project implements an AI-driven voice communication integration using the T
 - Node.js (v14 or later)
 - PostgreSQL database
 - Twilio account with Programmable Voice API access
-- Google Cloud account with Natural Language API enabled
 
 ## Setup
 
