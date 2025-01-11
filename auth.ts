@@ -34,8 +34,6 @@ export const {
       // Prevent sign in without email verification
       if (existingUser?.emailVerified === "false") return false;
 
-      // TODO: Add 2FA check
-
       return true;
     },
     async session({ token, session }) {
