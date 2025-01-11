@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Transcript } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,7 +14,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { PuffLoader } from "react-spinners";
@@ -101,9 +102,19 @@ export default function Dashboard() {
   if (transcripts.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">
-          Voice Communication Dashboard
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold mb-8">
+            Voice Communication Dashboard
+          </h1>
+          <Button
+            className="bg-blue-500"
+            variant="default"
+            onClick={() => signOut()}
+          >
+            Sign Out
+          </Button>
+        </div>
+
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Initiate Call</h2>
           <form
@@ -156,7 +167,18 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Voice Communication Dashboard</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold mb-8">
+          Voice Communication Dashboard
+        </h1>
+        <Button
+          className="bg-blue-500"
+          variant="default"
+          onClick={() => signOut()}
+        >
+          Sign Out
+        </Button>
+      </div>
       {transcripts.length === 0 ? (
         <div className="text-center text-gray-500">
           <p>No transcripts available at the moment.</p>
