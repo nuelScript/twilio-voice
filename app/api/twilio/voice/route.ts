@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         twiml.say("You pressed one. Let's record your message.");
         twiml.record({
           transcribe: true,
-          transcribeCallback: "/api/transcription-callback",
+          transcribeCallback: "/api/twilio/transcription-callback",
           maxLength: 30,
           playBeep: true,
         });
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     twiml
       .gather({
         numDigits: 1,
-        action: "/api/twilio",
+        action: "/api/twilio/voice",
         method: "POST",
       })
       .say(

@@ -15,13 +15,13 @@ export async function POST(request: NextRequest) {
     let call;
     if (direction === "inbound") {
       call = await twilio.calls.create({
-        url: `${process.env.NEXTAUTH_URL}/api/twilio`,
+        url: `${process.env.NEXTAUTH_URL}/api/twilio/voice`,
         to: process.env.TWILIO_PHONE_NUMBER!,
         from: phoneNumber,
       });
     } else {
       call = await twilio.calls.create({
-        url: `${process.env.NEXTAUTH_URL}/api/twilio`,
+        url: `${process.env.NEXTAUTH_URL}/api/twilio/voice`,
         to: phoneNumber,
         from: process.env.TWILIO_PHONE_NUMBER!,
       });
