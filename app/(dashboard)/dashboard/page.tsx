@@ -1,20 +1,21 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { Transcript } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { Line } from "react-chartjs-2";
+import axios from "axios";
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
-import { Transcript } from "@/types";
-import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { Line } from "react-chartjs-2";
 import { PuffLoader } from "react-spinners";
 
 ChartJS.register(
@@ -29,6 +30,11 @@ ChartJS.register(
 
 export default function Dashboard() {
   const { data: session } = useSession();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [callStatus, setCallStatus] = useState("");
+  const [callDirection, setCallDirection] = useState<"inbound" | "outbound">(
+    "outbound"
+  );
 
   const {
     data: transcripts = [],
@@ -44,6 +50,33 @@ export default function Dashboard() {
     enabled: !!session,
     retry: 1,
   });
+
+  async function initiateCall(e: React.FormEvent) {
+    e.preventDefault();
+    setCallStatus("Initiating call...");
+
+    try {
+      const response = await fetch("/api/twilio/initiate-call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber, direction: callDirection }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCallStatus(`Call initiated successfully. Call SID: ${data.callSid}`);
+        setPhoneNumber("");
+      } else {
+        setCallStatus(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      setCallStatus("Error initiating call");
+      console.error("Error initiating call:", error);
+    }
+  }
 
   const chartData = {
     labels: transcripts.map((t) => new Date(t.createdAt).toLocaleString()),
@@ -71,6 +104,38 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold mb-8">
           Voice Communication Dashboard
         </h1>
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Initiate Call</h2>
+          <form onSubmit={initiateCall} className="flex items-center space-x-4">
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="Enter phone number"
+              className="flex-grow px-4 py-2 border rounded"
+              required
+            />
+            <select
+              value={callDirection}
+              onChange={(e) =>
+                setCallDirection(e.target.value as "inbound" | "outbound")
+              }
+              className="px-4 py-2 border rounded"
+            >
+              <option value="outbound">Outbound</option>
+              <option value="inbound">Inbound (Simulate)</option>
+            </select>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Call
+            </button>
+          </form>
+          {callStatus && (
+            <p className="mt-2 text-sm text-gray-600">{callStatus}</p>
+          )}
+        </div>
         <div className="text-center text-gray-500">
           <p>No transcripts available at the moment.</p>
         </div>
@@ -95,6 +160,41 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Initiate Call</h2>
+            <form
+              onSubmit={initiateCall}
+              className="flex items-center space-x-4"
+            >
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Enter phone number"
+                className="flex-grow px-4 py-2 border rounded"
+                required
+              />
+              <select
+                value={callDirection}
+                onChange={(e) =>
+                  setCallDirection(e.target.value as "inbound" | "outbound")
+                }
+                className="px-4 py-2 border rounded"
+              >
+                <option value="outbound">Outbound</option>
+                <option value="inbound">Inbound (Simulate)</option>
+              </select>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Call
+              </button>
+            </form>
+            {callStatus && (
+              <p className="mt-2 text-sm text-gray-600">{callStatus}</p>
+            )}
+          </div>
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Sentiment Analysis</h2>
             <Line data={chartData} />
